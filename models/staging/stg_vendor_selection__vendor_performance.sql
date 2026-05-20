@@ -10,7 +10,8 @@ renamed as (
         id as vendor_id,
         country as country_code,
         send_amt as send_amount,
-        deliver_rate
+        deliver_rate,
+        create_time
     from source
     where id is not null
       and country is not null

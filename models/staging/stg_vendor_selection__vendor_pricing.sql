@@ -11,7 +11,8 @@ renamed as (
         vendor_id,
         product_id,
         country_code,
-        rate
+        rate,
+        create_time
     from source
     where vendor_id is not null
       and product_id is not null
