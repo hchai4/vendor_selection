@@ -15,6 +15,7 @@ renamed as (
     where id is not null
       and country is not null
       and send_amt > 1000
+      and date(create_time) between date_sub(current_date(), interval 6 month) and current_date()
 
 
 )

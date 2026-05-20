@@ -3,7 +3,7 @@ with source as (
     select *
     from {{ source('vendor_selection', 'vendor_pricing') }}
 
-), 
+),
 
 renamed as (
 
@@ -17,7 +17,7 @@ renamed as (
       and product_id is not null
       and country_code is not null
       and rate <= 0.1
-
+      and date(create_time) between date_sub(current_date(), interval 6 month) and current_date()
 
 )
 
