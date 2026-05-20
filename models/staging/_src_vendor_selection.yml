@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: vendor_selection
+    database: vendor-selection-496903
+    schema: raw
+    description: Get from bigquery by getting replica
+    tables:
+      - name: vendor_pricing
+      - name: vendor_performance
+      - name: vendor_manager
