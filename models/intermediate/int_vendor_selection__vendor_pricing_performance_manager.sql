@@ -5,6 +5,39 @@ with vendor_pricing as (
 
 ),
 
+valid_dates_vendor_pricing as (
+
+    select
+        vendor_id,
+        product_id,
+        country_code,
+        rate,
+        create_time as valid_from,
+
+        -- use lead window function to get the next createdate of vendor price
+        LEAD(create_time) OVER (
+            PARTITION BY country_code, vendor_id, product_id
+            ORDER BY create_time
+        ) AS valid_to_raw
+    from vendor_pricing
+
+),
+
+final_pricing as (
+
+    select
+        vendor_id,
+        product_id,
+        country_code,
+        rate,
+        valid_from,
+        -- use coalesce to handle null value, i.e. newest price lead return to null
+        coalesce(valid_to_raw, CAST('2099-12-31' as date)) as valid_to
+    from valid_dates_vendor_pricing
+
+),
+
+
 vendor_performance as (
 
     select *
@@ -22,7 +55,8 @@ vendor_manager as (
 joined as (
 
     select
-        vp.create_time,
+        vp.valid_from,
+        vp.valid_to,
         vp.country_code,
         vm.account_manager,
         vp.vendor_id,
@@ -30,7 +64,7 @@ joined as (
         vper.send_amount,
         vper.deliver_rate,
         vp.rate
-    from vendor_pricing as vp
+    from final_pricing as vp
     join vendor_performance as vper
         on vp.vendor_id = vper.vendor_id
        and vp.country_code = vper.country_code
@@ -40,10 +74,12 @@ joined as (
 
 ),
 
+
 final as (
 
     select
-        create_time,
+        valid_from,
+        valid_to,
         country_code,
         account_manager,
         vendor_id,

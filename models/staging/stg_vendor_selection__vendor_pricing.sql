@@ -12,7 +12,7 @@ renamed as (
         product_id,
         country_code,
         rate,
-        create_time
+        cast(create_time as date) as create_time
     from source
     where vendor_id is not null
       and product_id is not null

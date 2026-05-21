@@ -7,12 +7,10 @@ with source as (
 reconstruct as (
 
     select
-        * except (create_time, product_rank)
+        * except (valid_from, product_rank)
     from source
-    qualify row_number() over (
-        partition by country_code, vendor_id, product_id
-        order by create_time desc
-    ) = 1
+    where CURRENT_DATE() >= valid_from 
+    and CURRENT_DATE() < valid_to
 
 )
 

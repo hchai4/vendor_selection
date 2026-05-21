@@ -11,7 +11,7 @@ renamed as (
         country as country_code,
         send_amt as send_amount,
         deliver_rate,
-        create_time
+        cast(create_time as date) as create_time
     from source
     where id is not null
       and country is not null
