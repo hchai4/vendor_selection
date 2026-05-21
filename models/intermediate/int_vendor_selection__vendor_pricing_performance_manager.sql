@@ -22,21 +22,21 @@ vendor_manager as (
 joined as (
 
     select
-        vendor_pricing.create_time,
-        vendor_pricing.country_code,
-        vendor_manager.account_manager,
-        vendor_pricing.vendor_id,
-        vendor_pricing.product_id,
-        vendor_performance.send_amount,
-        vendor_performance.deliver_rate,
-        vendor_pricing.rate
-    from vendor_pricing
-    left join vendor_performance
-        on vendor_pricing.vendor_id = vendor_performance.vendor_id
-       and vendor_pricing.country_code = vendor_performance.country_code
-    left join vendor_manager
-        on vendor_pricing.vendor_id = vendor_manager.vendor_id
-       and vendor_pricing.country_code = vendor_manager.country_code
+        vp.create_time,
+        vp.country_code,
+        vm.account_manager,
+        vp.vendor_id,
+        vp.product_id,
+        vper.send_amount,
+        vper.deliver_rate,
+        vp.rate
+    from vendor_pricing as vp
+    join vendor_performance as vper
+        on vp.vendor_id = vper.vendor_id
+       and vp.country_code = vper.country_code
+    join vendor_manager as vm
+        on vp.vendor_id = vm.vendor_id
+       and vp.country_code = vm.country_code
 
 ),
 
@@ -56,9 +56,17 @@ final as (
                 (coalesce(deliver_rate, 0) / 100.0) * ln(1 + coalesce(send_amount, 0))
             ) / (1 + 10000 * coalesce(rate, 0)),
             4
-        ) as score
-
-
+        ) as score,
+        row_number() over (
+            partition by country_code, vendor_id
+            order by round(
+                (
+                    (coalesce(deliver_rate, 0) / 100.0) * ln(1 + coalesce(send_amount, 0))
+                ) / (1 + 10000 * coalesce(rate, 0)),
+                4
+            ) desc,
+            product_id
+        ) as product_rank
     from joined
 
 )
