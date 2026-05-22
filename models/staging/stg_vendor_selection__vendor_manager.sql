@@ -12,7 +12,7 @@ renamed as (
         account_manager
     from source
     where vendor is not null
-      and country is not null
+    and country is not null
 
 )
 
