@@ -33,7 +33,7 @@ Why this design?
 - Dividing by (1 + 10000 * rate) penalizes higher price; the 1 prevents division-by-zero.
 - Rounding to 4 decimals simplifies display and ranking; ties can occur because ranks are computed on rounded scores.
 
-Recommended SQL implementation (no tiers)
+Recommended SQL implementation
 ----------------------------------------
 The example below demonstrates:
 1. Join of three staging models: vendor_pricing, vendor_performance, vendor_manager (on vendor_id, country_code)
