@@ -1,0 +1,26 @@
+models:
+  - name: stg_vendor_selection__vendor_pricing
+    columns:
+      - name: vendor_id
+        tests:
+          - not_null
+          # - relationships:
+          #     arguments:
+          #       to: ref('stg_vendor_selection__vendor_performance')
+          #       field: vendor_id
+
+  - name: stg_vendor_selection__vendor_performance
+    columns:
+      - name: vendor_id
+        tests:
+          - not_null 
+          # - relationships:
+          #     arguments:
+          #       to: ref('stg_vendor_selection__vendor_pricing')
+          #       field: vendor_id
+
+  - name: stg_vendor_selection__vendor_manager
+    columns:
+      - name: vendor_id
+        tests:
+          - not_null 

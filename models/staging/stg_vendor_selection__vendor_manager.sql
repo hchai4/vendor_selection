@@ -8,11 +8,11 @@ renamed as (
 
     select
         vendor as vendor_id,
-        country,
+        country as country_code,
         account_manager
     from source
     where vendor is not null
-      and country is not null
+    and country is not null
 
 )
 
